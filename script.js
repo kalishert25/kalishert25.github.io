@@ -45,7 +45,6 @@ function displayArray([nums, curr_index]) {
 }
 const randomizeValues = size => {
     arr = []
-    console.log("randomized")
     for (let i = 0; i < 2 ** size; i++) {
         arr.push(Math.random());
     }
@@ -54,7 +53,6 @@ const randomizeValues = size => {
 randomizeValues(barCounter.value)
 displayArray([arr, [-1]])
 randomizeButton.addEventListener('click', () => {
-    console.log(sorting)
     if (!sorting) {
         randomizeValues(barCounter.value)
         displayArray([arr, [-1]])
@@ -79,7 +77,6 @@ barCounter.addEventListener('change', () => {
     }
 })
 reverseButton.addEventListener('click', () => {
-    console.log(sorting)
     if (!sorting) {
         for (let i = 0; i < arr.length / 2; i++) {
             [arr[i], arr[arr.length - i - 1]] = [arr[arr.length - i - 1], arr[i]]
@@ -88,7 +85,6 @@ reverseButton.addEventListener('click', () => {
     }
 })
 sortButton.addEventListener('click', () => {
-    console.log(sorting)
     if (!sorting) {
         sorting = true;
         let algorithm;
@@ -124,20 +120,22 @@ sortButton.addEventListener('click', () => {
         }
         sort(algorithm, speedCounter.value);
         gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.03)
-        console.log("called")
     }
 })
 playAudio.addEventListener('click', () => {
     if (!startedAudio) {
         startedAudio = true;
         oscillator.start()
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.03)
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.03)
     } else if (!playAudio.checked) {
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.03)
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.03)
     }
 })
 
 function playNote(frequency, duration) {
+    if (!sorting) {
+        return
+    }
     // create Oscillator node
     oscillator.frequency.value = frequency
     const currentTime = audioCtx.currentTime;
@@ -413,7 +411,7 @@ function sort(algorithm, delay) {
         const curr = gen.next();
         if (curr.done) {
             sorting = false; // TODO keeps calling add clearInterval
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.03)
+            gainNode.gain.exponentialRampToValueAtTime(0.000001, audioCtx.currentTime + 0.03)
             clearInterval(run)
         } else {
             displayArray(curr.value);
