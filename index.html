@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Sorting Algorithm Visualizer</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <h1>
+        Sorting Algorithms
+    </h1>
+    <canvas id="display" height="400" width="1024">
+    </canvas>
+
+    <div class="controls">
+        <label class="item" for="cars">Choose an algorithm:</label>
+        <select name="algorithms" id="algorithms" class="item button-like">
+            <option value="bubble">Bubble Sort </option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="odd-even">Odd-Even Sort</option>
+            <option value="cocktail">Cocktail Sort</option>
+            <option value="comb">Comb Sort</option>
+            <option value="merge-recursive">Recursive Merge Sort</option>
+            <option value="merge-iterative">Iterative Merge Sort</option>
+            <option value="quick">Quicksort</option>
+        </select>
+        <label class="item" for="bar-count">Scale:</label>
+        <input min="1" step="1" max="10" value="6" id="bar-count" type="range" class="item">
+        <label class="item" for="speed">Sorting Speed (Delay in ms):</label>
+        <input class="item button-like" min="0" max="2000" value="65" id="speed" type="number" class="item"
+            style="width:50px;">
+
+    </div>
+    <div class="controls">
+        <label for="detail" class="item" title="Increase Detail (Recomended for Merge sort and Quicksort)"> Increase
+            Detail</label>
+        <input type="checkbox" id="detail" name="detail">
+        <label for="audio" class="item">Play Audio</label>
+        <input type="checkbox" id="audio" name="audio">
+        <button class="item button-like" id="sort">Sort!</button>
+        <button class="item button-like" id="randomize">Randomize!</button>
+        <button class="item button-like" id="reverse">Reverse!</button>
+    </div>
+
+</body>
+<script src="script.js"></script>
+
+</html>

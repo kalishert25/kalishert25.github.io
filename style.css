@@ -1,0 +1,48 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    background: #fafafa;
+    font-family: "helvetica";
+}
+
+h1 {
+    text-align: center;
+}
+
+
+canvas {
+    border: 1px solid black;
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.controls {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+
+}
+
+.item {
+    vertical-align: middle;
+    border: none;
+    margin: 5px;
+    height: 20%;
+}
+
+.button-like {
+    border: 1px solid black;
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: inherit;
+}
+
+.button-like:hover {
+    background: #d4e6ed;
+}
+
+#algorithms {
+    padding: 0px 5px;
+}
