@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="build.css" rel="stylesheet" />
+        <script href="fraction.js" type="module"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script
+            id="MathJax-script"
+            async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        ></script>
+        <script type="module" src="algorithm.js"></script>
+    </head>
+    <body class="bg-gray-950">
+        <div
+            class="container mx-auto mt-10 max-w-[75vw] rounded-3xl bg-zinc-800 py-10 text-white bg-blend-multiply drop-shadow-xl"
+        >
+            <h1 class="mb-8 text-center text-4xl font-extrabold">
+                Yeargame <span class="text-teal-500">Solver</span>
+            </h1>
+            <form
+                id="form"
+                class="mx-auto flex max-w-md flex-col justify-center"
+            >
+                <div class="flex flex-row items-start justify-evenly">
+                    <div
+                        class="mb-4 flex flex-col"
+                        id="checkbox-container-unary"
+                    >
+                        <h2
+                            class="mb-2 text-center text-[20px] font-thin uppercase"
+                        >
+                            Unary Operations
+                        </h2>
+                    </div>
+
+                    <div
+                        class="mb-4 flex flex-col"
+                        id="checkbox-container-binary"
+                    >
+                        <h2
+                            class="mb-2 text-center text-[20px] font-thin uppercase"
+                        >
+                            Binary Operations
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="min" class="block text-orange-300"
+                        >Minimum Answer</label
+                    >
+                    <input
+                        value="0"
+                        id="min"
+                        name="minselect"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md border-2 bg-inherit px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label for="max" class="block text-orange-300"
+                        >Maximum Answer</label
+                    >
+                    <input
+                        value="100"
+                        id="max"
+                        name="maxselect"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md border-2 bg-inherit px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label for="year" class="block text-orange-300">Year</label>
+                    <input
+                        placeholder=""
+                        id="year"
+                        name="yearselect"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md border-2 bg-inherit px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label for="searchPerformance">Search Performance:</label>
+                    <select id="searchPerformance" name="searchPerformance" class="bg-inherit border-2 border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option value="shallow">
+                            Most Performant (Shallow Search)
+                        </option>
+                        <option value="moderate">Moderately Performant</option>
+                        <option value="average">Average Performance</option>
+                        <option value="deep">
+                            Least Performant (Deep Search)
+                        </option>
+                    </select>
+                </div>
+                <input
+                    id="submit-form"
+                    type="submit"
+                    value="Find Solutions"
+                    class="w-full select-none rounded border-2 border-teal-500 px-4 py-2 font-bold uppercase text-teal-500 hover:bg-zinc-900"
+                />
+            </form>
+            <h4
+                id="download-button"
+                class="my-4 inline-block cursor-pointer text-center text-orange-300 underline"
+            >
+                Download Anwers
+            </h4>
+        </div>
+    </body>
+    <script type="module" src="script.js"></script>
+</html>
