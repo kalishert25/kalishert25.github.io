@@ -1,8 +1,19 @@
 import Fraction from "./fraction.js"
 
-const MAX_INTERMEDIATE = Infinity
-const MAX_DENOM = Infinity
-
+const PERF_LEVELS = {
+    shallow: {
+        MAX_INTERMEDIATE: 100,
+        MAX_DENOM: 100,
+    },
+    medium: {
+        MAX_INTERMEDIATE: 100000,
+        MAX_DENOM: 100000,
+    },
+    deep: {
+        MAX_INTERMEDIATE: Infinity,
+        MAX_DENOM: Infinity,
+    },
+}
 const FACTORIAL = new Uint32Array([
     1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
     6227020800, 87178291200, 1307674368000, 20922789888000, 355687428096000,
@@ -60,24 +71,6 @@ const DEFAULT_OPERATIONS = {
 
         PROPS.UNARY_INVERSE,
     ),
-    recipricol: operation(
-        (x) => `${x}^{-1}`,
-        (x) => `inv(${x})`,
-        (x) => (!x.equals(0) ? x.inverse() : null),
-
-        PROPS.RECIPRICOL,
-    ),
-    floor: operation(
-        (x) => `\\lfloor ${x} \\rfloor`,
-        (x) => `floor(${x})`,
-        (x) => x.floor(),
-    ),
-
-    ceil: operation(
-        (x) => `\\lceil ${x} \\rceil`,
-        (x) => `ceil(${x})`,
-        (x) => x.ceil(),
-    ),
     factorial: operation(
         (x) => `${x}!`,
         (x) => `(${x})!`,
@@ -114,7 +107,24 @@ const DEFAULT_OPERATIONS = {
             return (n | 0) === n ? Fraction(n) : null
         },
     ),
+    floor: operation(
+        (x) => `\\lfloor ${x} \\rfloor`,
+        (x) => `floor(${x})`,
+        (x) => x.floor(),
+    ),
 
+    ceil: operation(
+        (x) => `\\lceil ${x} \\rceil`,
+        (x) => `ceil(${x})`,
+        (x) => x.ceil(),
+    ),
+    recipricol: operation(
+        (x) => `${x}^{-1}`,
+        (x) => `inv(${x})`,
+        (x) => (!x.equals(0) ? x.inverse() : null),
+
+        PROPS.RECIPRICOL,
+    ),
     add: operation(
         (a, b) => `${a} + ${b}`,
         (a, b) => `(${a}) + (${b})`,
@@ -128,32 +138,22 @@ const DEFAULT_OPERATIONS = {
         (a, b) => a.sub(b),
     ),
     multiply: operation(
-        (a, b) => `${a} \\cdot ${b}`,
+        (a, b) => `${a} \\times ${b}`,
         (a, b) => `(${a})*(${b})`,
         (a, b) => a.mul(b),
         PROPS.COMMUNITIVE,
         PROPS.ASSOCIATIVE,
     ),
     divide: operation(
-        (a, b) => `${a}/${b}`,
+        (a, b) => `${a}\\div ${b}`,
         (a, b) => `(${a})/(${b})`,
         (a, b) => (b != 0 ? a.div(b) : null),
     ),
-    // remainder: operation(
-    //     (a, b) => `${a} \\% ${b}`,
-    //     (a, b) => `(${a}) % (${b})`,
-    //     (a, b) => a.mod(b),
-    // ),
-    mod: operation(
-        (a, b) => `${a} \\bmod{${b}}`,
-        (a, b) => `mod(${a}, ${b})`,
-        (a, b) => a.mod(b).add(b).mod(b),
-    ),
+
     power: operation(
         (a, b) => `${a}^${b}`,
         (a, b) => `(${a})^(${b})`,
         (a, b) => {
-            // console.log(b)
             if (a.equals(1) || b.equals(0)) {
                 //using 0^0 == 1
                 return Fraction(1)
@@ -205,6 +205,16 @@ const DEFAULT_OPERATIONS = {
             return null
         },
     ),
+    // remainder: operation(
+    //     (a, b) => `${a} \\% ${b}`,
+    //     (a, b) => `(${a}) % (${b})`,
+    //     (a, b) => a.mod(b),
+    // ),
+    mod: operation(
+        (a, b) => `${a} \\bmod{${b}}`,
+        (a, b) => `mod(${a}, ${b})`,
+        (a, b) => a.mod(b).add(b).mod(b),
+    ),
 }
 
 class Queue {
@@ -227,14 +237,22 @@ class Queue {
 
 function find_all_equations(
     year,
-    min_num = 0,
-    max_num = 100,
+    min_num,
+    max_num,
+    performance_level,
+    max_equations_per_num,
     allowed_operations,
-    max_equations_per_num = 1,
     max_unary_stack = 10,
 ) {
-    const num_unique_digits = new Set(year).length
+    const start_time = new Date()
+    const MAX_INTERMEDIATE = Math.max(
+        PERF_LEVELS[performance_level].MAX_INTERMEDIATE,
+        Math.max(Math.abs(min_num), Math.abs(max_num)),
+    )
+    const MAX_DENOM = PERF_LEVELS[performance_level].MAX_DENOM
 
+    console.log("mi=" + MAX_INTERMEDIATE)
+    console.log("md=" + MAX_DENOM)
     const solutions = []
     function add_solution(solution) {
         if (
@@ -298,15 +316,13 @@ function find_all_equations(
     const operations = [[], []]
     for (const key in allowed_operations) {
         const operation = DEFAULT_OPERATIONS[key]
-        if(operation == undefined) continue
+        if (operation == undefined) continue
         if (operations[operation.arity - 1] == undefined) {
             operations[operation.arity - 1] = []
         }
         operations[operation.arity - 1].push(operation)
     }
 
-    console.log(operations)
-    console.log(used_number_groups)
     for (const simple of used_number_groups[used_number_groups.length - 1]) {
         add_solution(simple)
     }
@@ -315,11 +331,11 @@ function find_all_equations(
     const similar_expressions = new Set()
 
     while (queue.items.length > 0) {
-        console.log(queue.items.length)
+        // console.log(queue.items.length)
         const curr_expression = queue.dequeue()
 
         //unary operations
-        
+
         for (const unary_op of operations[0]) {
             //no double unary minus -(-x) = x
             if (
@@ -340,6 +356,7 @@ function find_all_equations(
                 value == null ||
                 value.equals(curr_expression.value) ||
                 value > MAX_INTERMEDIATE ||
+                value < -MAX_INTERMEDIATE ||
                 value.d > MAX_DENOM
             ) {
                 continue
@@ -395,14 +412,12 @@ function find_all_equations(
                             curr_expression.value,
                             second_expression.value,
                         )
-                        if (typeof value !== "object") {
-                            console.log(typeof value + " value= " +value + " " + binary_op.symbol)
-                        }
-                            
+
                         //optimizations (this cuts down the search space)
                         if (
                             value === null ||
                             value > MAX_INTERMEDIATE ||
+                            value < -MAX_INTERMEDIATE ||
                             value.d > MAX_DENOM
                         ) {
                             continue
@@ -431,30 +446,23 @@ function find_all_equations(
         }
     }
 
-    // let jsonString = "[" + solutions.map((el) => JSON.stringify(el)).join(",") + "]"
-    // var bb = new Blob(jsonString, { type: "text/plain" })
-    // var a = document.createElement("a")
-    // a.download = "download.json"
-    // a.href = window.URL.createObjectURL(bb)
-    // a.textContent = "Download ready"
-    // a.style = "display:none"
-    // a.click()
-
-    return prettify_solutions(solutions, max_equations_per_num, min_num, max_num)
-    
+    return prettify_solutions(
+        solutions,
+        max_equations_per_num,
+        min_num,
+        max_num,
+        ((new Date) - start_time),
+    )
 }
 
 function* all_digital_orderings(year, year_digits_sorted, max_index) {
     const arr = year + "." //decimal point
     const len = arr.length
-
-    console.log(max_index)
     let data = []
     let indexes_used = []
     yield* permutations_until(0)
     function* permutations_until(index) {
         data.length = index
-        //console.log([...arr_no_point].filter((v, i) => indecesUsed[i]));
         let data_str = data.join("")
         if (
             indexes_used.length === len &&
@@ -503,14 +511,6 @@ function goedel_encode(used_indexes, year, sorted_year_no_duplicate) {
     return [idx, map]
 }
 
-// for (let i = 0; i < 16; i++) {
-//     let bA = Array.from(i.toString(2))
-//         .map((x) => parseInt(x))
-//         .reverse()
-//     console.log(bA)
-//     console.log(goedel_encode(bA, "0223", "023"))
-// }
-
 function hash(idx, value) {
     function cantor(a, b) {
         return ((b + b + 1) * (a + b)) / 2 + b
@@ -518,20 +518,7 @@ function hash(idx, value) {
     return cantor(idx, cantor(value.n, value.d)) * value.s
 }
 
-// for(let i = 0; i < 10; i++) {
-//     for(let j = 0; j < 10; j++) {
-//         console.log(hash(5, 345, 234))
-//     }
-// }
-
-// find_all_equations("2025")
-
-// const [used_digits_map, prevent_duplicates_table] =
-//     get_used_digits_map_and_prevent_duplicates_table(year)
-// const exchangeForDuplicateIDX = (idx) =>
-//     prevent_duplicates_wtable.get(idx) ?? idx
-
-function prettify_solutions(solutions, max_entries_per_line, minval, maxval) {
+function prettify_solutions(solutions, max_entries_per_line, minval, maxval, ellapsed_ms) {
     let out = ""
     let found = 0
     const solutions_short = solutions.slice(minval, maxval + 1)
@@ -550,14 +537,22 @@ function prettify_solutions(solutions, max_entries_per_line, minval, maxval) {
         out += `${count} = ` + top_entries.join("\t\t") + "\n"
         count++
     }
-    return out + `\nFound ${found}/${count} solutions.`
+    out += `\nFound ${found}/${maxval - minval + 1} solutions.`
+    out += `\nEllapsed time: ${(ellapsed_ms/1000).toFixed(1)} seconds.`
+    return out
 }
 
 self.addEventListener("message", function (event) {
     // Handle the received message
     let data = event.data
-    console.log(data.yearselect)
-    const solutions = find_all_equations(data.yearselect, parseInt(data.minselect), parseInt(data.maxselect), data)
+    const solutions = find_all_equations(
+        data.yearselect,
+        parseInt(data.minselect),
+        parseInt(data.maxselect),
+        data.plevel,
+        data.maxperline,
+        data,
+    )
     // Perform computations using the received data
 
     // Send a response back to the main thread (if needed)
