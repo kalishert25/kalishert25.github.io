@@ -15,7 +15,7 @@ const DEFAULT_OPERATIONS = Operations()
 for (const key in DEFAULT_OPERATIONS) {
     const operation = DEFAULT_OPERATIONS[key]
     console.log(operation)
-    const toggle = createToggle(key, operation.web_symbol("a", "b"))
+    const toggle = createToggle(key, operation.web_symbol("a", "b"), operation.is_checked_by_default)
     if (operation.arity === 1) {
         checkbox_container_unary.innerHTML += (toggle)
     } else if (operation.arity === 2) {
@@ -24,7 +24,7 @@ for (const key in DEFAULT_OPERATIONS) {
 }
 year_box.defaultValue = new Date().getFullYear()
 
-function createToggle(id, text) {
+function createToggle(id, text, is_checked_by_default) {
 
     return `<div class="justify-left mb-3 flex w-full items-center">
         <label
@@ -33,7 +33,7 @@ function createToggle(id, text) {
 
         >
             <div class="relative">
-                <input type="checkbox" id="${id}" class="peer sr-only" name="${id}" checked/>
+                <input type="checkbox" id="${id}" class="peer sr-only" name="${id}" ${is_checked_by_default ? "checked" : ""}/>
                 <div
                     class="box bg-zinc-700 peer-checked:bg-zinc-500 block h-8 w-14 rounded-full transition ease-in-out delay-50"
                 ></div>

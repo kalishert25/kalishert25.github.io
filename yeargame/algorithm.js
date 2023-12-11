@@ -42,10 +42,11 @@ const PROPS = Object.freeze({
  * @param {() => string} symbol String interpolation
  * @param {() => Fraction} eval Run the operation (actual math)
  * @param {() => bool} is_defined_for Return true if the input x is a valid argument
+ * @param {bool} is_checked_by_default Tells whether or not to check the operation automatically on page startup
  * @param {Array?} props Operation properties such as communitivity, associativity, etc. Used for better inference to speed up algorithm.
  * @returns {Operation} mathematical operation
  */
-function operation(web_symbol, symb, calculate, ...props) {
+function operation(web_symbol, symb, calculate, is_checked_by_default, ...props) {
     if (props === null) {
         props = []
     }
@@ -55,6 +56,7 @@ function operation(web_symbol, symb, calculate, ...props) {
         symb: web_symbol,
         symbol: symb,
         calculate: calculate,
+        is_checked_by_default: is_checked_by_default,
         props: props,
     }
 }
@@ -68,6 +70,7 @@ const DEFAULT_OPERATIONS = {
         (x) => `-${x}`,
         (x) => `-(${x})`,
         (x) => x.neg(),
+        true,
 
         PROPS.UNARY_INVERSE,
     ),
@@ -76,6 +79,7 @@ const DEFAULT_OPERATIONS = {
         (x) => `(${x})!`,
         (x) =>
             x.d === 1 && x >= 0 && x <= 18 ? Fraction(FACTORIAL[x.n]) : null,
+        true,
     ),
     double_factorial: operation(
         (x) => `${x}!!`,
@@ -84,6 +88,7 @@ const DEFAULT_OPERATIONS = {
             x.d === 1 && x >= 0 && x <= 28
                 ? Fraction(DOUBLE_FACTORIAL[x.n])
                 : null,
+        true,
     ),
     sqrt: operation(
         (x) => `\\sqrt ${x}`,
@@ -95,6 +100,7 @@ const DEFAULT_OPERATIONS = {
             let root = Math.sqrt(x)
             return (root | 0) === root ? Fraction(root) : null
         },
+        true,
     ),
     common_log: operation(
         (x) => `\\log ${x}`,
@@ -106,29 +112,34 @@ const DEFAULT_OPERATIONS = {
             let n = Math.log10(x.n) - Math.log10(x.d)
             return (n | 0) === n ? Fraction(n) : null
         },
+        false,
     ),
     floor: operation(
         (x) => `\\lfloor ${x} \\rfloor`,
         (x) => `floor(${x})`,
         (x) => x.floor(),
+        false,
     ),
+    
 
     ceil: operation(
         (x) => `\\lceil ${x} \\rceil`,
         (x) => `ceil(${x})`,
         (x) => x.ceil(),
+        false,
     ),
     recipricol: operation(
         (x) => `${x}^{-1}`,
         (x) => `inv(${x})`,
         (x) => (!x.equals(0) ? x.inverse() : null),
-
+        false,
         PROPS.RECIPRICOL,
     ),
     add: operation(
         (a, b) => `${a} + ${b}`,
         (a, b) => `(${a}) + (${b})`,
         (a, b) => a.add(b),
+        true,
         PROPS.COMMUNITIVE,
         PROPS.ASSOCIATIVE,
     ),
@@ -136,11 +147,13 @@ const DEFAULT_OPERATIONS = {
         (a, b) => `${a} - ${b}`,
         (a, b) => `(${a}) - (${b})`,
         (a, b) => a.sub(b),
+        true,
     ),
     multiply: operation(
         (a, b) => `${a} \\times ${b}`,
         (a, b) => `(${a})*(${b})`,
         (a, b) => a.mul(b),
+        true,
         PROPS.COMMUNITIVE,
         PROPS.ASSOCIATIVE,
     ),
@@ -148,6 +161,7 @@ const DEFAULT_OPERATIONS = {
         (a, b) => `${a}\\div ${b}`,
         (a, b) => `(${a})/(${b})`,
         (a, b) => (b != 0 ? a.div(b) : null),
+        true,
     ),
 
     power: operation(
@@ -167,6 +181,7 @@ const DEFAULT_OPERATIONS = {
 
             return a.pow(b) ?? null
         },
+        true,
     ),
     radical: operation(
         (a, b) => `\\sqrt[${b}]{${a}}`,
@@ -188,6 +203,7 @@ const DEFAULT_OPERATIONS = {
 
             return a.pow(inv) ?? null
         },
+        true,
     ),
     log_base: operation(
         (a, b) => `\\log_{\\,${a}} ${b}`,
@@ -204,16 +220,20 @@ const DEFAULT_OPERATIONS = {
             }
             return null
         },
+        false,
     ),
     // remainder: operation(
     //     (a, b) => `${a} \\% ${b}`,
     //     (a, b) => `(${a}) % (${b})`,
     //     (a, b) => a.mod(b),
     // ),
+
+    //mathmatical modulo operation. (Not a % b, instead (a % b + b) % b ) *Different Behavior for negative numbers https://bigmachine.io/theory/mod-and-remainder-are-not-the-same/
     mod: operation(
         (a, b) => `${a} \\bmod{${b}}`,
         (a, b) => `mod(${a}, ${b})`,
         (a, b) => a.mod(b).add(b).mod(b),
+        false,
     ),
 }
 
@@ -492,13 +512,7 @@ function* all_digital_orderings(year, year_digits_sorted, max_index) {
     }
 }
 
-function get_int_from_bit_arr(arr) {
-    let num = 0
-    for (let i = 0; i < arr.length; i++) {
-        num += arr[arr.length - 1 - i] << i
-    }
-    return num
-}
+
 
 function goedel_encode(used_indexes, year, sorted_year_no_duplicate) {
     let idx = 1
