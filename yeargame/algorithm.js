@@ -15,22 +15,86 @@ const PERF_LEVELS = {
     },
 }
 const FACTORIAL = new Uint32Array([
-    1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
-    6227020800, 87178291200, 1307674368000, 20922789888000, 355687428096000,
+    1,
+    1,
+    2,
+    6,
+    24,
+    120,
+    720,
+    5040,
+    40320,
+    362880,
+    3628800,
+    39916800,
+    479001600,
+    6227020800,
+    87178291200,
+    1307674368000,
+    20922789888000,
+    355687428096000,
     6402373705728000,
 ])
 
 const PRIMES = new Uint32Array([
-    2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
-    73, 79, 83, 89, 97,
+    2,
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    19,
+    23,
+    29,
+    31,
+    37,
+    41,
+    43,
+    47,
+    53,
+    59,
+    61,
+    67,
+    71,
+    73,
+    79,
+    83,
+    89,
+    97,
 ]) //used for hashing
 const DOUBLE_FACTORIAL = new Uint32Array([
-    1, 1, 2, 3, 8, 15, 48, 105, 384, 945, 3840, 10395, 46080, 135135, 645120,
-    2027025, 10321920, 34459425, 185794560, 654729075, 3715891200, 13749310575,
-    81749606400, 316234143225, 1961990553600, 7905853580625, 51011754393600,
-    213458046676875, 1428329123020800, 6190283353629375,
+    1,
+    1,
+    2,
+    3,
+    8,
+    15,
+    48,
+    105,
+    384,
+    945,
+    3840,
+    10395,
+    46080,
+    135135,
+    645120,
+    2027025,
+    10321920,
+    34459425,
+    185794560,
+    654729075,
+    3715891200,
+    13749310575,
+    81749606400,
+    316234143225,
+    1961990553600,
+    7905853580625,
+    51011754393600,
+    213458046676875,
+    1428329123020800,
+    6190283353629375,
 ])
-
 
 const PROPS = Object.freeze({
     UNARY_INVERSE: Symbol("UNARY_INVERSE"), //f(f(x)) == x
@@ -46,7 +110,13 @@ const PROPS = Object.freeze({
  * @param {Array?} props Operation properties such as communitivity, associativity, etc. Used for better inference to speed up algorithm.
  * @returns {Operation} mathematical operation
  */
-function operation(web_symbol, symb, calculate, is_checked_by_default, ...props) {
+function operation(
+    web_symbol,
+    symb,
+    calculate,
+    is_checked_by_default,
+    ...props
+) {
     if (props === null) {
         props = []
     }
@@ -64,7 +134,7 @@ function operation(web_symbol, symb, calculate, is_checked_by_default, ...props)
 function Operations() {
     return DEFAULT_OPERATIONS
 }
-export {Operations, find_all_equations}
+export { Operations, find_all_equations }
 const DEFAULT_OPERATIONS = {
     negate: operation(
         (x) => `-${x}`,
@@ -72,14 +142,14 @@ const DEFAULT_OPERATIONS = {
         (x) => x.neg(),
         true,
 
-        PROPS.UNARY_INVERSE,
+        PROPS.UNARY_INVERSE
     ),
     factorial: operation(
         (x) => `${x}!`,
         (x) => `(${x})!`,
         (x) =>
             x.d === 1 && x >= 0 && x <= 18 ? Fraction(FACTORIAL[x.n]) : null,
-        true,
+        true
     ),
     double_factorial: operation(
         (x) => `${x}!!`,
@@ -88,7 +158,7 @@ const DEFAULT_OPERATIONS = {
             x.d === 1 && x >= 0 && x <= 28
                 ? Fraction(DOUBLE_FACTORIAL[x.n])
                 : null,
-        true,
+        true
     ),
     sqrt: operation(
         (x) => `\\sqrt ${x}`,
@@ -100,7 +170,7 @@ const DEFAULT_OPERATIONS = {
             let root = Math.sqrt(x)
             return (root | 0) === root ? Fraction(root) : null
         },
-        true,
+        true
     ),
     common_log: operation(
         (x) => `\\log ${x}`,
@@ -112,28 +182,27 @@ const DEFAULT_OPERATIONS = {
             let n = Math.log10(x.n) - Math.log10(x.d)
             return (n | 0) === n ? Fraction(n) : null
         },
-        false,
+        false
     ),
     floor: operation(
         (x) => `\\lfloor ${x} \\rfloor`,
         (x) => `floor(${x})`,
         (x) => x.floor(),
-        false,
+        false
     ),
-    
 
     ceil: operation(
         (x) => `\\lceil ${x} \\rceil`,
         (x) => `ceil(${x})`,
         (x) => x.ceil(),
-        false,
+        false
     ),
     recipricol: operation(
         (x) => `${x}^{-1}`,
         (x) => `inv(${x})`,
         (x) => (!x.equals(0) ? x.inverse() : null),
         false,
-        PROPS.RECIPRICOL,
+        PROPS.RECIPRICOL
     ),
     add: operation(
         (a, b) => `${a} + ${b}`,
@@ -141,13 +210,13 @@ const DEFAULT_OPERATIONS = {
         (a, b) => a.add(b),
         true,
         PROPS.COMMUNITIVE,
-        PROPS.ASSOCIATIVE,
+        PROPS.ASSOCIATIVE
     ),
     subtract: operation(
         (a, b) => `${a} - ${b}`,
         (a, b) => `(${a}) - (${b})`,
         (a, b) => a.sub(b),
-        true,
+        true
     ),
     multiply: operation(
         (a, b) => `${a} \\times ${b}`,
@@ -155,13 +224,13 @@ const DEFAULT_OPERATIONS = {
         (a, b) => a.mul(b),
         true,
         PROPS.COMMUNITIVE,
-        PROPS.ASSOCIATIVE,
+        PROPS.ASSOCIATIVE
     ),
     divide: operation(
         (a, b) => `${a}\\div ${b}`,
         (a, b) => `(${a})/(${b})`,
         (a, b) => (b != 0 ? a.div(b) : null),
-        true,
+        true
     ),
 
     power: operation(
@@ -181,7 +250,7 @@ const DEFAULT_OPERATIONS = {
 
             return a.pow(b) ?? null
         },
-        true,
+        true
     ),
     radical: operation(
         (a, b) => `\\sqrt[${b}]{${a}}`,
@@ -203,7 +272,7 @@ const DEFAULT_OPERATIONS = {
 
             return a.pow(inv) ?? null
         },
-        true,
+        true
     ),
     log_base: operation(
         (a, b) => `\\log_{\\,${a}} ${b}`,
@@ -220,7 +289,7 @@ const DEFAULT_OPERATIONS = {
             }
             return null
         },
-        false,
+        false
     ),
     // remainder: operation(
     //     (a, b) => `${a} \\% ${b}`,
@@ -233,7 +302,7 @@ const DEFAULT_OPERATIONS = {
         (a, b) => `${a} \\bmod{${b}}`,
         (a, b) => `mod(${a}, ${b})`,
         (a, b) => a.mod(b).add(b).mod(b),
-        false,
+        false
     ),
 }
 
@@ -262,12 +331,12 @@ function find_all_equations(
     performance_level,
     max_equations_per_num,
     allowed_operations,
-    max_unary_stack = 10,
+    max_unary_stack = 10
 ) {
     const start_time = new Date()
     const MAX_INTERMEDIATE = Math.max(
         PERF_LEVELS[performance_level].MAX_INTERMEDIATE,
-        Math.max(Math.abs(min_num), Math.abs(max_num)),
+        Math.max(Math.abs(min_num), Math.abs(max_num))
     )
     const MAX_DENOM = PERF_LEVELS[performance_level].MAX_DENOM
 
@@ -293,7 +362,7 @@ function find_all_equations(
     const [max_index, max_arr] = goedel_encode(
         new Array(year.length).fill(1),
         year,
-        year_digits_sorted,
+        year_digits_sorted
     )
     for (let i = 0; i < max_arr.length; i++) {
         max_arr[i] = PRIMES[i] ** (max_arr[i] + 1)
@@ -307,8 +376,8 @@ function find_all_equations(
         (value, index, self) =>
             index ===
             self.findIndex(
-                (t) => t.expr === value.expr && t.index === value.index,
-            ),
+                (t) => t.expr === value.expr && t.index === value.index
+            )
     )
 
     for (let i = 0; i < concatenated_nums.length; i++) {
@@ -351,7 +420,9 @@ function find_all_equations(
     const similar_expressions = new Set()
 
     while (queue.items.length > 0) {
-        // console.log(queue.items.length)
+        if (queue.items.length % 1000 === 0) {
+            console.log(queue.items.length + " items")
+        }
         const curr_expression = queue.dequeue()
 
         //unary operations
@@ -430,7 +501,7 @@ function find_all_equations(
                     {
                         const value = binary_op.calculate(
                             curr_expression.value,
-                            second_expression.value,
+                            second_expression.value
                         )
 
                         //optimizations (this cuts down the search space)
@@ -445,7 +516,7 @@ function find_all_equations(
 
                         const expression = binary_op.symbol(
                             curr_expression.expression,
-                            second_expression.expression,
+                            second_expression.expression
                         )
                         const hashed = hash(new_idx, value)
                         const next_expression = {
@@ -471,7 +542,7 @@ function find_all_equations(
         max_equations_per_num,
         min_num,
         max_num,
-        ((new Date) - start_time),
+        new Date() - start_time
     )
 }
 
@@ -491,7 +562,7 @@ function* all_digital_orderings(year, year_digits_sorted, max_index) {
             const idx = goedel_encode(
                 [...indexes_used].slice(0, -1),
                 year,
-                year_digits_sorted,
+                year_digits_sorted
             )[0]
             if (idx <= max_index) {
                 yield { expr: data_str, index: idx }
@@ -512,8 +583,6 @@ function* all_digital_orderings(year, year_digits_sorted, max_index) {
     }
 }
 
-
-
 function goedel_encode(used_indexes, year, sorted_year_no_duplicate) {
     let idx = 1
     let map = new Uint32Array(sorted_year_no_duplicate.length)
@@ -532,7 +601,13 @@ function hash(idx, value) {
     return cantor(idx, cantor(value.n, value.d)) * value.s
 }
 
-function prettify_solutions(solutions, max_entries_per_line, minval, maxval, ellapsed_ms) {
+function prettify_solutions(
+    solutions,
+    max_entries_per_line,
+    minval,
+    maxval,
+    ellapsed_ms
+) {
     let out = ""
     let found = 0
     const solutions_short = solutions.slice(minval, maxval + 1)
@@ -545,14 +620,17 @@ function prettify_solutions(solutions, max_entries_per_line, minval, maxval, ell
         }
         found++
         const top_entries = [...solution_list]
-            .sort((a, b) => a.length - b.length)
+            .sort(
+                (a, b) =>
+                    a.includes(".") - b.includes(".") || a.length - b.length
+            )
             .slice(0, max_entries_per_line)
 
         out += `${count} = ` + top_entries.join("\t\t") + "\n"
         count++
     }
     out += `\nFound ${found}/${maxval - minval + 1} solutions.`
-    out += `\nEllapsed time: ${(ellapsed_ms/1000).toFixed(1)} seconds.`
+    out += `\nEllapsed time: ${(ellapsed_ms / 1000).toFixed(1)} seconds.`
     return out
 }
 
@@ -565,7 +643,7 @@ self.addEventListener("message", function (event) {
         parseInt(data.maxselect),
         data.plevel,
         data.maxperline,
-        data,
+        data
     )
     // Perform computations using the received data
 
