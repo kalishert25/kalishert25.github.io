@@ -2,8 +2,9 @@ html,
 body {
     height: 100%;
     width: 100%;
-    background: #fafafa;
+    background: #f7f7f7;
     font-family: "helvetica";
+    overflow: hidden;
 }
 
 h1 {
@@ -12,7 +13,8 @@ h1 {
 
 
 canvas {
-    border: 1px solid black;
+    border: 2px solid black;
+    border-radius: 3px;
     display: block;
     margin: auto;
     margin-bottom: 20px;
@@ -33,14 +35,14 @@ canvas {
 }
 
 .button-like {
-    border: 1px solid black;
+    border: 1px solid rgb(0, 0, 0);
     padding: 2px 5px;
-    border-radius: 5px;
+    border-radius: 2px;
     background: inherit;
 }
 
 .button-like:hover {
-    background: #d4e6ed;
+    background: #e0e0e0;
 }
 
 #algorithms {

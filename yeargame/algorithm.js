@@ -2,8 +2,8 @@ import Fraction from "./fraction.js"
 
 const PERF_LEVELS = {
     shallow: {
-        MAX_INTERMEDIATE: 100,
-        MAX_DENOM: 100,
+        MAX_INTERMEDIATE: 1000,
+        MAX_DENOM: 1000,
     },
     medium: {
         MAX_INTERMEDIATE: 100000,
@@ -331,7 +331,8 @@ function find_all_equations(
     performance_level,
     max_equations_per_num,
     allowed_operations,
-    max_unary_stack = 10
+    max_unary_stack = 10,
+    short_circuit = true
 ) {
     const start_time = new Date()
     const MAX_INTERMEDIATE = Math.max(
@@ -339,6 +340,8 @@ function find_all_equations(
         Math.max(Math.abs(min_num), Math.abs(max_num))
     )
     const MAX_DENOM = PERF_LEVELS[performance_level].MAX_DENOM
+    //for short circuiting
+    let num_undiscovered_solutions = max_num - min_num + 1
 
     console.log("mi=" + MAX_INTERMEDIATE)
     console.log("md=" + MAX_DENOM)
@@ -347,12 +350,22 @@ function find_all_equations(
         if (
             solution.value.d != 1 ||
             solution.value.s != 1 ||
+            solution.value.n > max_num ||
+            solution.value.n < min_num ||
             solution.index < max_index
         ) {
             return
         }
         if (solutions[solution.value.n] === undefined) {
             solutions[solution.value.n] = []
+            // if this number has not been found yet
+            num_undiscovered_solutions--
+            // once we find all the solutions, we don't need to keep searching
+            if (short_circuit && num_undiscovered_solutions <= 0) {
+                solutions[solution.value.n].push(solution.expression)
+                console.log("Found All solutions")
+                return true
+            }
         }
         if (solutions[solution.value.n].length < max_equations_per_num) {
             solutions[solution.value.n].push(solution.expression)
@@ -413,7 +426,7 @@ function find_all_equations(
     }
 
     for (const simple of used_number_groups[used_number_groups.length - 1]) {
-        add_solution(simple)
+        if(add_solution(simple)) return getReturnValue()//short circuit
     }
     const queue = new Queue(used_number_groups.flat())
 
@@ -462,7 +475,7 @@ function find_all_equations(
                 index: index,
                 stacked_u_ops: curr_expression.stacked_u_ops + 1,
             }
-            add_solution(next_expression)
+            if (add_solution(next_expression)) return getReturnValue()//short circuit
 
             if (
                 !similar_expressions.has(hashed) &&
@@ -525,7 +538,7 @@ function find_all_equations(
                             index: new_idx,
                             stacked_u_ops: 0,
                         }
-                        add_solution(next_expression)
+                        if(add_solution(next_expression)) return getReturnValue()//short circuit
                         used_number_groups[new_idx].push(next_expression)
                         if (!similar_expressions.has(hashed)) {
                             queue.enqueue(next_expression)
@@ -536,14 +549,17 @@ function find_all_equations(
             }
         }
     }
-
-    return prettify_solutions(
-        solutions,
-        max_equations_per_num,
-        min_num,
-        max_num,
-        new Date() - start_time
-    )
+    function getReturnValue() {
+        return prettify_solutions(
+            solutions,
+            max_equations_per_num,
+            min_num,
+            max_num,
+            new Date() - start_time
+        )
+    }
+    return getReturnValue()
+    
 }
 
 function* all_digital_orderings(year, year_digits_sorted, max_index) {
@@ -647,6 +663,6 @@ self.addEventListener("message", function (event) {
     )
     // Perform computations using the received data
 
-    // Send a response back to the main thread (if needed)
+    // Send a response back to the main thread
     self.postMessage(solutions)
 })
