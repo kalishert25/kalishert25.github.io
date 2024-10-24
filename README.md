@@ -1,3 +1,3 @@
-# sorting-algorithms
+# tanner's projects
 
-This program is a simple visualizer for Sorting Algorithms
+a website to host personal projects
