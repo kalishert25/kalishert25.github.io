@@ -41,9 +41,9 @@ canvas {
     background: inherit;
 }
 
-.button-like:hover {
+/* .button-like:hover {
     background: #e0e0e0;
-}
+} */
 
 #algorithms {
     padding: 0px 5px;
