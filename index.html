@@ -87,23 +87,17 @@
     window.onload = window.onresize = make_line_numbers;
     function make_line_numbers() {
         
-
         const code = document.getElementById("code");
-        const line_numbers = document.getElementById("line_numbers");
         
-        let line_number = 0;
-
         const line_height_str = window.getComputedStyle(code).lineHeight;
         // remove trailing "px" and convert to an int 
-        console.log(line_height_str);
-        const line_height = parseFloat(line_height_str.substr(0, line_height_str.length - 2));
-
-        
+        const line_height = parseFloat(
+            line_height_str.substring(0, line_height_str.length - 2)
+        );
+ 
         let num_lines = code.offsetHeight / line_height;
-        console.log(line_height, num_lines);
         const format_line_number = (n) => `<div class="line">${n}</div>`
         
-        console.log(container.innerText); 
         const lines = []    
         for (let i = 0; i < num_lines; i += 1) {
             lines.push(format_line_number(i));
@@ -111,6 +105,7 @@
         for (let i = 0; i < 25; i += 1) {
             lines.push(format_line_number("~"));
         }
+        const line_numbers = document.getElementById("line_numbers");
         line_numbers.innerHTML = lines.join("");
     }
     </script>
