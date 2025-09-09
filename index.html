@@ -2,32 +2,117 @@
 <html>
 <head>
   <title>Tanner Kalisher Projects</title>
-  <link rel="stylesheet" href="/style.css">
-  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-  <h1>tanner's projects</h1>
-  <p></p>
-  <ul>
-    <li><a href="https://whcompsci.github.io/projects/schooldle/index.html">Schooldle</a>
-      <p>wordle-inpired college guessing game</p>
-    </li>
-    
-    <li><a href="yeargame/index.html">Yeargame Solver</a><p>automatic solver for yeargame problem</p></li>
-    <li><a href="https://whcompsci.github.io/projects/neural-networks/index.html">Neural Network</a><p>1-D regression simulation, uses neural networks and backpropagation </p></li>
+<div class="top-bar">
+    <span class="file-title">projects.c</span>
+           
+</div>
+<div id="container">
+    <div id="line_numbers"></div>
+    <div id="code">
+                <span class="type">void</span>
+                <span class="name">tanners_projects</span><span class="misc">(</span><span class="type">void</span><span class="misc">) {</span>
+<div class="indent">
+    <br><br>
+            <!-- Schooldle -->
+      <span class="comment">// wordle-inspired college guessing game</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">schooldle</span> 
+      <span class="op">=</span>
+      <a class ="string" href="https://whcompsci.github.io/projects/schooldle/index.html">"https://whcompsci.github.io/projects/schooldle/index.html"</a><span class="misc">;</span>
+      <br><br>
 
-    <li><a href="https://whcompsci.github.io/projects/othello-ai/index.html">Othello</a><p>board game, player vs computer. uses alpha-beta pruning with iterative deepening<p></p></li>
-    <li><a href="https://whcompsci.github.io/projects/sokoban/index.html">Sokoban</a><p>classic japanese block puzzle game</p></li>
-    <li><a href="https://whcompsci.github.io/projects/dla-simulation/index.html">DLA Simulation</a><p>diffusion-limited aggregation simulation</p></li>
-    <li><a href="sorting/index.html">Sorting Algorithms</a><p>visualize different sorting algorithms</p></li>
-    <li><a href="https://whcompsci.github.io/projects/color-wars/index.html">Color Wars</a><p>chain reaction game, player vs computer</p></li>
+      <!-- Yeargame Solver -->
+      <span class="comment">// automatic solver for yeargame problem</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">yeargame</span> 
+      <span class="op">=</span>
+      <a class="string" href="yeargame/index.html">"yeargame/index.html"</a><span class="misc">;</span>
+      <br><br>
 
+      <!-- Neural Network -->
+      <span class="comment">// 1-D regression simulation using neural networks + backpropagation</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">neural_network</span> 
+      <span class="op">=</span>
+      <a class="string" href="https://whcompsci.github.io/projects/neural-networks/index.html">"https://whcompsci.github.io/projects/neural-networks/index.html"</a><span class="misc">;</span>
+      <br><br>
 
+      <!-- Othello -->
+      <span class="comment">// board game: player vs computer, alpha-beta pruning w/ iterative deepening</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">othello</span> 
+      <span class="op">=</span>
+      <a class="string" href="https://whcompsci.github.io/projects/othello-ai/index.html">"https://whcompsci.github.io/projects/othello-ai/index.html"</a><span class="misc">;</span>
+      <br><br>
 
+      <!-- Sokoban -->
+      <span class="comment">// classic japanese block puzzle game</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">sokoban</span> 
+      <span class="op">=</span>
+      <a class="string" href="https://whcompsci.github.io/projects/sokoban/index.html">"https://whcompsci.github.io/projects/sokoban/index.html"</a><span class="misc">;</span>
+      <br><br>
 
-    <!-- <li><a href="http   s://www.github.com">GitHub</a></li> -->
-  </ul>
+      <!-- DLA Simulation -->
+      <span class="comment">// diffusion-limited aggregation simulation</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">dla_simulation</span> 
+      <span class="op">=</span>
+      <a class="string" href="https://whcompsci.github.io/projects/dla-simulation/index.html">"https://whcompsci.github.io/projects/dla-simulation/index.html"</a><span class="misc">;</span>
+      <br><br>
+
+      <!-- Sorting Algorithms -->
+      <span class="comment">// visualize different sorting algorithms</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">sorting_algorithms</span> 
+      <span class="op">=</span>
+      <a class="string" href="sorting/index.html">"sorting/index.html"</a><span class="misc">;</span>
+      <br><br>
+
+      <!-- Color Wars -->
+      <span class="comment">// chain reaction game: player vs computer</span> 
+      <br><span class="type">char</span> 
+      <span class="op">*</span><span class="name">color_wars</span> 
+      <span class="op">=</span>
+      <a class="string" href="https://whcompsci.github.io/projects/color-wars/index.html">"https://whcompsci.github.io/projects/color-wars/index.html"</a><span class="misc">;</span>
+    </div>
+    <span class="misc">}</span>
   </div>
+</div>
 </body>
+<script>
+    window.onload = window.onresize = make_line_numbers;
+    function make_line_numbers() {
+        
+
+        const code = document.getElementById("code");
+        const line_numbers = document.getElementById("line_numbers");
+        
+        let line_number = 0;
+
+        const line_height_str = window.getComputedStyle(code).lineHeight;
+        // remove trailing "px" and convert to an int 
+        console.log(line_height_str);
+        const line_height = parseFloat(line_height_str.substr(0, line_height_str.length - 2));
+
+        
+        let num_lines = code.offsetHeight / line_height;
+        console.log(line_height, num_lines);
+        const format_line_number = (n) => `<div class="line">${n}</div>`
+        
+        console.log(container.innerText); 
+        const lines = []    
+        for (let i = 0; i < num_lines; i += 1) {
+            lines.push(format_line_number(i));
+        }
+        for (let i = 0; i < 25; i += 1) {
+            lines.push(format_line_number("~"));
+        }
+        line_numbers.innerHTML = lines.join("");
+    }
+    </script>
 </html>
+

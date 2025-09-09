@@ -1,17 +1,59 @@
 /* styles.css */
 
 body {
-    font-family: Inter, sans-serif;
+    font-family: monospace;   /*Inter, sans-serif; */
     color: #ccc7c7bd;
     margin: 0;
-    padding: 20px;
-    background-color: rgb(62, 62, 62);
+    font-size: 14px !important;
+    line-height: 1.2;
+    background-color: rgb(42, 42, 42);
+}
+
+.top-bar {
+    background-color: black;
+
+} 
+.file-title {
+    background-color: rgb(42, 42, 42);
+    position: relative;
+    padding: 1rem;
+    left: 3rem;
 }
 
 h1 {
     color: #ccc7c7;
-    font-size: 3rem;
     margin: 0;
+}
+
+.type {
+    color: #b38d4c;
+}
+.op {
+    color: blue;
+}
+
+.keyword {
+    color: #b37f27;
+}
+.name, .misc {
+    color: white;
+}
+
+.op {
+    color: pink;
+}
+
+.string {
+    color: orange;
+}
+.comment {
+    color: #008400;
+}
+
+.indent {
+    border-left:1px dashed gray;
+    padding-left:2rem;
+    margin-left:3px;
 }
 
 ul {
@@ -27,22 +69,13 @@ li {
     margin-bottom: 10px;
 }
 
-a {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 1.5rem;
-    line-height: 2rem;
-}
-
 a:hover {
     text-decoration: underline;
 }
 
-.container {
-    margin: auto;
-    margin-top: 2rem;
-    padding: 2rem;
-    width: 25rem;
-    border: 1px solid #ccc7c71f;
-    border-radius: 5px;
+#container {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    align-items: start;
+    padding: 1rem;
 }
